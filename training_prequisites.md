@@ -1,6 +1,6 @@
 # Training Prerequisites
 
-Before starting Kubernetes or DevOps training, it is important to have foundational knowledge in several key areas. Below are the essential prerequisites and what you should know in each category:
+Before starting this daas Kubernetes bootcamp, it is important to have foundational knowledge in several key areas. Below are the essential prerequisites and what you should know in each category:
 
 ---
 
