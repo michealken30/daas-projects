@@ -1,4 +1,4 @@
-# Free Kubernetes Sandbox Guide
+# Free Kubernetes Sandbox Guides
 
 This guide provides several free and easy ways to run and test Kubernetes manifests in sandbox environments. These options are ideal for learning, testing, and experimenting with Kubernetes without needing a paid cloud account or complex setup.
 
