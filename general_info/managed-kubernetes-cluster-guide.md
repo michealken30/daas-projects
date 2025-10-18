@@ -1,6 +1,6 @@
 # Running Managed Kubernetes Clusters on EKS, AKS, GKE and Oracle Cloud
 
-To connect and manage a managed Kubernetes cluster (EKS, AKS, GKE, or Oracle Cloud), you will need a Linux environment. This can be:
+To connect and manage a managed Kubernetes cluster (EKS, AKS, GKE or Oracle Cloud), you will need a Linux environment. This can be:
 - Native Linux
 - Linux on macOS (via Terminal)
 - Linux on Windows (using WSL - Windows Subsystem for Linux)
