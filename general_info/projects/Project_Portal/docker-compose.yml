@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    ports:
+      - "8082:8082"
+    networks:
+      - microservices-network
+
+  upload-service:
+    build:
+      context: .
+      dockerfile: services/upload-service/Dockerfile
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./uploads:/root/uploads
+    networks:
+      - microservices-network
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - auth-service
+      - upload-service
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge
+
+volumes:
+  uploads:
