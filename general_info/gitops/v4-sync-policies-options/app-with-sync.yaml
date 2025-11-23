@@ -1,0 +1,79 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-sync-demo
+  namespace: argocd
+
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/argoproj/argocd-example-apps.git
+    targetRevision: HEAD
+    path: guestbook
+    directory:
+      recurse: true
+
+  
+  destination:
+    name: in-cluster
+    namespace: argocd-sync-demo
+  
+  # =============================================================================
+  # SYNC POLICY - Automated and Manual Sync Configuration
+  # =============================================================================
+  syncPolicy:
+    automated:
+      prune: true        # Delete resources that exist in cluster but not in Git
+      selfHeal: true     # Force sync when cluster state differs (even manual changes)
+      allowEmpty: false  # Prevent sync with zero resources (safety check)
+    
+    # ---------------------------------------------------------------------------
+    # SYNC OPTIONS - Fine-grained control over sync behavior
+    # ---------------------------------------------------------------------------
+    syncOptions:
+      # Resource Management Options
+      - CreateNamespace=true     # Auto-create namespace if it doesn't exist
+      - PrunePropagationPolicy=foreground  # Wait for dependent resources before deleting (foreground/background/orphan)
+      - PruneLast=true          # Prune resources after new resources are healthy
+      
+      # Validation and Dry-Run Options
+      - Validate=true           # Validate resources against Kubernetes API
+      - ApplyOutOfSyncOnly=true # Only apply resources that are out-of-sync (efficiency)
+      
+      # Server-Side Apply Options 
+      - ServerSideApply=true    # Use server-side apply instead of client-side
+      - RespectIgnoreDifferences=true # Honor ignoreDifferences during sync
+      
+      # Resource Handling Options
+      - FailOnSharedResource=false  # Don't fail if resource is managed by another app
+      - Replace=false           # Use replace instead of apply (destructive)
+      
+    # ---------------------------------------------------------------------------
+    # RETRY CONFIGURATION - Control sync retry behavior on failures
+    # ---------------------------------------------------------------------------
+    retry:
+      limit: 5                  # Maximum number of retry attempts
+      backoff:
+        duration: 5s           # Initial backoff duration
+        factor: 2              # Backoff factor (exponential backoff)
+        maxDuration: 3m        # Maximum backoff duration
+  
+  # =============================================================================
+  # IGNORE DIFFERENCES - Exclude fields from drift detection
+  # =============================================================================
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+    # Ignore managed fields and status
+    - group: "*"
+      kind: "*"
+      managedFieldsManagers:
+        - kube-controller-manager
+      jqPathExpressions:
+        - .metadata.managedFields
+        - .status
+  
+
+  revisionHistoryLimit: 10  # Number of recent sync revisions to keep

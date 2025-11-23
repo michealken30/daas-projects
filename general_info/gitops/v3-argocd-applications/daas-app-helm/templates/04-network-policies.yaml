@@ -1,0 +1,79 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-auth-service-netpol
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  egress:
+  - {}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - port: 8082
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: auth-service
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-upload-service-netpol
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  egress:
+  - {}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - port: 8083
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: upload-service
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-api-gateway-netpol
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  egress:
+  - ports:
+    - port: 8082
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: auth-service
+  - ports:
+    - port: 8083
+      protocol: TCP
+    to:
+    - podSelector:
+        matchLabels:
+          app: upload-service
+  - {}
+  ingress:
+  - {}
+  podSelector:
+    matchLabels:
+      app: api-gateway
+  policyTypes:
+  - Ingress
+  - Egress

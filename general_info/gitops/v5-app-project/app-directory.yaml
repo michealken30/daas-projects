@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: application-directory-demo
+  namespace: argocd
+spec:
+  destination:
+    namespace: demo-app
+    server: https://kubernetes.default.svc
+  project: daas-project
+  source:
+    directory:
+      exclude: '{*.sh,README.md}'
+      include: '*.yaml'
+      recurse: true
+    path: general_info/projects/Project_Portal/k8s
+    repoURL: https://github.com/daasnigeria/daascohort3.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

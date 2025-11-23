@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: daascohort3-app
+  namespace: argocd
+spec:
+  destination:
+    name: k8slab-second-cluster
+    namespace: default
+  project: default
+  source:
+    helm:
+        releaseName: daas-app
+        # valueFiles:
+        #   - custom-values.yaml
+        values: |
+          authService:
+            replicas: 2
+    path: general_info/gitops/v3-argocd-applications/daas-app-helm
+    repoURL: https://github.com/daasnigeria/daascohort3.git
+    targetRevision: gitops
+

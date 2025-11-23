@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-app-config
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+data:
+  AUTH_SERVICE_URL: {{ .Values.appConfig.authServiceUrl | quote }}
+  JWT_SECRET: {{ .Values.appConfig.jwtSecret | quote }}
+  UPLOAD_SERVICE_URL: {{ .Values.appConfig.uploadServiceUrl | quote }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-uploads-pv
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 5Gi
+  hostPath:
+    path: /tmp/uploads
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-uploads-pvc
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc.uploadsPvc.storageRequest | quote }}

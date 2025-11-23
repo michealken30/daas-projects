@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-upload-service
+  labels:
+    app: upload-service
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.uploadService.replicas }}
+  selector:
+    matchLabels:
+      app: upload-service
+    {{- include "daas-app-helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: upload-service
+      {{- include "daas-app-helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: GIN_MODE
+          value: {{ quote .Values.uploadService.uploadService.env.ginMode }}
+        envFrom:
+        - configMapRef:
+            name: {{ include "daas-app-helm.fullname" . }}-app-config
+        image: {{ .Values.uploadService.uploadService.image.repository }}:{{ .Values.uploadService.uploadService.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.uploadService.uploadService.imagePullPolicy }}
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          tcpSocket:
+            port: 8083
+        name: upload-service
+        ports:
+        - containerPort: 8083
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          tcpSocket:
+            port: 8083
+        resources: {{- toYaml .Values.uploadService.uploadService.resources | nindent 10
+          }}
+        volumeMounts:
+        - mountPath: /root/uploads
+          name: uploads-storage
+      volumes:
+      - name: uploads-storage
+        persistentVolumeClaim:
+          claimName: {{ include "daas-app-helm.fullname" . }}-uploads-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-upload-service
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.uploadService.type }}
+  selector:
+    app: upload-service
+    {{- include "daas-app-helm.selectorLabels" . | nindent 4 }}
+  ports:
+  {{- .Values.uploadService.ports | toYaml | nindent 2 }}

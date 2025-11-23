@@ -1,0 +1,70 @@
+apiGateway:
+  apiGateway:
+    env:
+      ginMode: release
+    image:
+      repository: daasnigeria/daasrepo
+      tag: api-gateway
+    imagePullPolicy: Always
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  ports:
+  - port: 8081
+    protocol: TCP
+    targetPort: 8081
+  replicas: 1
+  type: LoadBalancer
+appConfig:
+  authServiceUrl: http://auth-service:8082
+  jwtSecret: your-secret-key
+  uploadServiceUrl: http://upload-service:8083
+pvc:
+  uploadsPvc:
+    storageRequest: 5Gi
+uploadService:
+  ports:
+  - port: 8083
+    protocol: TCP
+    targetPort: 8083
+  replicas: 1
+  type: ClusterIP
+  uploadService:
+    env:
+      ginMode: release
+    image:
+      repository: daasnigeria/daasrepo
+      tag: upload-service
+    imagePullPolicy: Always
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+authService:
+  authService:
+    env:
+      ginMode: release
+    image:
+      repository: daasnigeria/daasrepo
+      tag: auth-service
+    imagePullPolicy: Always
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+  ports:
+  - port: 8082
+    protocol: TCP
+    targetPort: 8082
+  replicas: 1
+  type: ClusterIP

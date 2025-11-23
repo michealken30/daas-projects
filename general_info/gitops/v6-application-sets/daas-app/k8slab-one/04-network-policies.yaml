@@ -1,0 +1,76 @@
+# Network Policy for Auth Service
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: auth-service-netpol
+spec:
+  podSelector:
+    matchLabels:
+      app: auth-service
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway # ONLY api-gateway can connect to me
+    ports:
+    - protocol: TCP
+      port: 8082  #ONLY on port 8082
+  egress:
+  - {} # Allow all egress
+---
+# Network Policy for Upload Service
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: upload-service-netpol
+spec:
+  podSelector:
+    matchLabels:
+      app: upload-service
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: api-gateway
+    ports:
+    - protocol: TCP
+      port: 8083
+  egress:
+  - {} # Allow all egress
+---
+# Network Policy for API Gateway
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-gateway-netpol
+spec:
+  podSelector:
+    matchLabels:
+      app: api-gateway
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - {} # Allow all ingress (external traffic)
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: auth-service
+    ports:
+    - protocol: TCP
+      port: 8082
+  - to:
+    - podSelector:
+        matchLabels:
+          app: upload-service
+    ports:
+    - protocol: TCP
+      port: 8083
+  - {} # Allow other egress
