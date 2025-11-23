@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-api-gateway
+  labels:
+    app: api-gateway
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.apiGateway.replicas }}
+  selector:
+    matchLabels:
+      app: api-gateway
+    {{- include "daas-app-helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+      {{- include "daas-app-helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: GIN_MODE
+          value: {{ quote .Values.apiGateway.apiGateway.env.ginMode }}
+        envFrom:
+        - configMapRef:
+            name: {{ include "daas-app-helm.fullname" . }}-app-config
+        image: {{ .Values.apiGateway.apiGateway.image.repository }}:{{ .Values.apiGateway.apiGateway.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.apiGateway.apiGateway.imagePullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8081
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        name: api-gateway
+        ports:
+        - containerPort: 8081
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources: {{- toYaml .Values.apiGateway.apiGateway.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-api-gateway
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.apiGateway.type }}
+  selector:
+    app: api-gateway
+    {{- include "daas-app-helm.selectorLabels" . | nindent 4 }}
+  ports:
+  {{- .Values.apiGateway.ports | toYaml | nindent 2 }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-api-gateway-ingress
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: image-upload.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: '{{ include "daas-app-helm.fullname" . }}-api-gateway'
+            port:
+              number: 8081
+        path: /
+        pathType: Prefix

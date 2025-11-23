@@ -1,0 +1,117 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: daas-project
+  namespace: argocd
+  annotations:
+    description: "Daas Cohort3 AppProject with Security Controls"
+spec:
+  # ===========================================================================
+  # PROJECT DESCRIPTION
+  # ===========================================================================
+  description: "Project for managing Daas Cohort3 applications with security policies."
+  # ===========================================================================
+  # SOURCE REPOSITORIES - Allowed Git repos for applications
+  # ===========================================================================
+  sourceRepos:
+    - 'https://github.com/daasnigeria/daascohort3.git'
+    # Helm chart repositories
+    - 'https://charts.bitnami.com/bitnami'
+    - 'https://kubernetes.github.io/ingress-nginx'
+  
+  # ===========================================================================
+  # DESTINATIONS - Allowed Kubernetes clusters and namespaces
+  # ===========================================================================
+  destinations:
+    - server: 'https://kubernetes.default.svc'
+      namespace: 'demo-app'
+    - server: 'https://host.minikube.internal:63256'
+      namespace: '*' 
+  
+  # ===========================================================================
+  # CLUSTER RESOURCE WHITELIST - Cluster-scoped resources allowed
+  # ===========================================================================
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  
+  # ===========================================================================
+  # CLUSTER RESOURCE BLACKLIST - Explicitly denied cluster resources
+  # ===========================================================================
+  clusterResourceBlacklist:
+    - group: 'storage.k8s.io'
+      kind: 'StorageClass'
+  
+  # ===========================================================================
+  # NAMESPACE RESOURCE WHITELIST - Allowed namespaced resources
+  # ===========================================================================
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  
+  # ===========================================================================
+  # NAMESPACE RESOURCE BLACKLIST - Explicitly denied namespaced resources
+  # ===========================================================================
+  namespaceResourceBlacklist:
+    - group: ''
+      kind: 'Pod'
+    
+    # Prevent ReplicaSet creation (use Deployments instead)
+    - group: 'networking.k8s.io'
+      kind: 'NetworkPolicy'
+  
+  # ===========================================================================
+  # SYNC WINDOWS - Time-based deployment restrictions
+  # ===========================================================================
+  syncWindows:
+    # Emergency maintenance window - allow all syncs
+    - kind: allow
+      schedule: '0 2-4 * * 0'
+      duration: 2h
+      applications:
+        - '*'
+      namespaces:
+        - '*'
+      clusters:
+        - '*'
+      manualSync: true
+      timeZone: 'UTC'
+  
+  # ===========================================================================
+  # RBAC ROLES - Project-specific permissions
+  # ===========================================================================
+  roles:
+    - name: project-admin
+      description: 'Full administrative access to the project'
+      policies:
+        # Application management
+        - p, proj:daas-project:project-admin, applications, *, daas-project/*, allow
+        
+        # Can perform all sync operations
+        - p, proj:daas-project:project-admin, applications, sync, daas-project/*, allow
+        - p, proj:daas-project:project-admin, applications, override, daas-project/*, allow
+        - p, proj:daas-project:project-admin, applications, action/*, daas-project/*, allow
+        
+        # Project management
+        - p, proj:daas-project:project-admin, projects, get, daas-project, allow
+        - p, proj:daas-project:project-admin, projects, update, daas-project, allow
+      
+      groups:
+        - 'platform-team'
+        - 'devops-admins'
+    
+    - name: readonly
+      description: 'Read-only access for auditing and monitoring'
+      policies:
+        # View applications
+        - p, proj:daas-project:readonly, applications, get, daas-project/*, allow
+        - p, proj:daas-project:readonly, applications, list, daas-project/*, allow
+        
+        # View logs
+        - p, proj:daas-project:readonly, logs, get, daas-project/*, allow
+        
+        # View project
+        - p, proj:daas-project:readonly, projects, get, daas-project, allow
+      
+      groups:
+        - 'auditors'

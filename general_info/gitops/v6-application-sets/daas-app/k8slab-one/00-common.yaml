@@ -1,0 +1,35 @@
+# Shared ConfigMap for common configurations
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+data:
+  JWT_SECRET: "your-secret-key"
+  AUTH_SERVICE_URL: "http://auth-service:8082"
+  UPLOAD_SERVICE_URL: "http://upload-service:8083"
+---
+# Persistent Volume for uploads
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: uploads-pv-one
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /tmp/uploads
+---
+# Persistent Volume Claim for uploads
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: uploads-pvc-one
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

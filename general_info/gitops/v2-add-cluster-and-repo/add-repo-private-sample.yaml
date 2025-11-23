@@ -1,0 +1,71 @@
+# Template 1: HTTPS with Personal Access Token
+apiVersion: v1
+kind: Secret
+metadata:
+  name: private-repo-https
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: git
+  url: https://github.com/your-username/your-private-repo.git
+  username: your-username
+  password: ghp_your_personal_access_token
+  # Optional: specify projects that can use this repo
+  # project: my-project
+
+---
+# Template 2: SSH with Private Key
+apiVersion: v1
+kind: Secret
+metadata:
+  name: private-repo-ssh
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: git
+  url: git@github.com:your-username/your-private-repo.git
+  sshPrivateKey: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
+    ... (your complete private key here) ...
+    -----END OPENSSH PRIVATE KEY-----
+
+
+---
+# Template 3: GitHub App Authentication
+apiVersion: v1
+kind: Secret
+metadata:
+  name: private-repo-github-app
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: git
+  url: https://github.com/your-username/your-private-repo.git
+  githubAppID: "123456"
+  githubAppInstallationID: "789012"
+  githubAppPrivateKey: |
+    -----BEGIN RSA PRIVATE KEY-----
+    ... (your GitHub App private key) ...
+    -----END RSA PRIVATE KEY-----
+
+---
+# Template 4: Helm Repository
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argo-helm
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  name: argo
+  url: <helm-repo-url>
+  type: helm
+  username: my-username
+  password: my-password
+  tlsClientCertData: ...
+  tlsClientCertKey: ...

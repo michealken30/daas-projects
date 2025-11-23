@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-auth-service
+  labels:
+    app: auth-service
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.authService.replicas }}
+  selector:
+    matchLabels:
+      app: auth-service
+    {{- include "daas-app-helm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: auth-service
+      {{- include "daas-app-helm.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: GIN_MODE
+          value: {{ quote .Values.authService.authService.env.ginMode }}
+        envFrom:
+        - configMapRef:
+            name: {{ include "daas-app-helm.fullname" . }}-app-config
+        image: {{ .Values.authService.authService.image.repository }}:{{ .Values.authService.authService.image.tag
+          | default .Chart.AppVersion }}
+        imagePullPolicy: {{ .Values.authService.authService.imagePullPolicy }}
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          tcpSocket:
+            port: 8082
+        name: auth-service
+        ports:
+        - containerPort: 8082
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          tcpSocket:
+            port: 8082
+        resources: {{- toYaml .Values.authService.authService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "daas-app-helm.fullname" . }}-auth-service
+  labels:
+  {{- include "daas-app-helm.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.authService.type }}
+  selector:
+    app: auth-service
+    {{- include "daas-app-helm.selectorLabels" . | nindent 4 }}
+  ports:
+  {{- .Values.authService.ports | toYaml | nindent 2 }}
