@@ -1,0 +1,19 @@
+#!/bin/bash
+
+protected_branch='main'
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+
+while read local_ref local_sha remote_ref remote_sha
+do
+    if [[ $remote_ref =~ refs/heads/$protected_branch$ ]]; then
+        echo "❌ ERROR: Direct push to '$protected_branch' branch is not allowed!"
+        echo "👉 Please create a feature branch and submit a pull request instead."
+        echo ""
+        echo "To create a feature branch:"
+        echo "  git checkout -b feature/your-feature-name"
+        echo "  git push origin feature/your-feature-name"
+        exit 1
+    fi
+done
+
+exit 0
