@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: default
+data:
+  otel-collector-config.yaml: |
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+    
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+    processors:
+      batch:
+        timeout: 10s
+        send_batch_size: 1024
+      
+      resource:
+        attributes:
+          - key: deployment.environment
+            value: "production"
+            action: upsert
+          - key: k8s.cluster.name
+            value: "daas-k8s-cluster"
+            action: upsert
+
+    exporters:
+      datadog/exporter:
+        api:
+          site: "us5.datadoghq.com"
+          key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        traces:
+          span_name_as_resource_name: true
+      
+      debug:
+        verbosity: detailed
+        sampling_initial: 5
+        sampling_thereafter: 200
+
+    service:
+      extensions: [health_check]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch, resource]
+          exporters: [datadog/exporter, debug]
+      
+      telemetry:
+        logs:
+          level: "info"

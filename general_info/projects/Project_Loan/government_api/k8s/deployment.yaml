@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: government-api
+  namespace: default
+  labels:
+    app: government-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: government-api
+  template:
+    metadata:
+      labels:
+        app: government-api
+    spec:
+      containers:
+      - name: government-api
+        image: daasnigeria/daasrepo:government-api
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+          name: http
+        envFrom:
+        - configMapRef:
+            name: government-api-config
+        - secretRef:
+            name: government-api-secret
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

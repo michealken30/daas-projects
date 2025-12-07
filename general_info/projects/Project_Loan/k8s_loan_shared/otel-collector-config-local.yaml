@@ -1,0 +1,50 @@
+# OpenTelemetry Collector Configuration for Datadog
+# This collector receives traces via OTLP and exports them to Datadog
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 10s
+    send_batch_size: 1024
+  
+  # Add resource attributes
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: "development"
+        action: upsert
+
+exporters:
+  # Datadog Exporter
+  datadog/exporter:
+    api:
+      site: "us5.datadoghq.com"
+      key: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    
+    # Additional Datadog configuration
+    traces:
+      span_name_as_resource_name: true
+      
+  # Debug exporter for troubleshooting
+  debug:
+    verbosity: detailed
+    sampling_initial: 5
+    sampling_thereafter: 200
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [datadog/exporter, debug]
+  
+  telemetry:
+    logs:
+      level: "info"

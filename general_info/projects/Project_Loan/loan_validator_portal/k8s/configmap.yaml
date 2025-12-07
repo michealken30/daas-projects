@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loan-validator-portal-config
+  namespace: default
+data:
+  DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  DB_USER: "postgres"
+  DB_NAME: "loan_validator_db"
+  PORT: "8080"
+  GOV_BANK_URL: "http://government-api-service:8081"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "otel-collector-service:4317"
+  ENV: "production"

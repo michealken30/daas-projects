@@ -1,0 +1,11 @@
+# Logs Directory
+
+Application logs will be stored here when running locally.
+
+**Files created during runtime:**
+- `government-api.log` - Government API application logs
+- `loan-validator-portal.log` - Loan Validator Portal application logs
+- `gov-api.pid` - Government API process ID
+- `validator.pid` - Loan Validator Portal process ID
+
+**Note:** These files are created automatically by the startup scripts and should not be committed to version control.
