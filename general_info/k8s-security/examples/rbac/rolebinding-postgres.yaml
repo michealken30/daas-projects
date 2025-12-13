@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: postgres-binding
+  namespace: default
+  labels:
+    app: postgres
+subjects:
+- kind: ServiceAccount
+  name: postgres-sa
+  namespace: default
+roleRef:
+  kind: Role
+  name: postgres-role
+  apiGroup: rbac.authorization.k8s.io
+

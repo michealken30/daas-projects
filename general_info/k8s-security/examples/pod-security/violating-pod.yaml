@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: violating-pod
+  namespace: pod-security
+spec:
+  # This pod violates Pod Security Standards
+  # - Runs as root (no securityContext)
+  # - No resource limits
+  # - Uses default service account
+  containers:
+  - name: test
+    image: nginx:latest
+    # Missing security context
+    # Missing resource limits
+

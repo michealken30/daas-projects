@@ -1,0 +1,25 @@
+# Apply Pod Security Standards to a namespace
+# 
+# Option 1: Create namespace with labels (recommended)
+# kubectl apply -f namespace.yaml
+#
+# Option 2: Label existing namespace
+# kubectl label namespace pod-security pod-security.kubernetes.io/enforce=restricted \
+#   pod-security.kubernetes.io/audit=restricted \
+#   pod-security.kubernetes.io/warn=restricted
+
+# For Baseline policy (warnings only):
+# kubectl label namespace pod-security pod-security.kubernetes.io/enforce=baseline \
+#   pod-security.kubernetes.io/audit=baseline \
+#   pod-security.kubernetes.io/warn=baseline
+
+# For Restricted policy (blocks violations):
+# kubectl label namespace pod-security pod-security.kubernetes.io/enforce=restricted \
+#   pod-security.kubernetes.io/audit=restricted \
+#   pod-security.kubernetes.io/warn=restricted
+
+# To remove labels:
+# kubectl label namespace pod-security pod-security.kubernetes.io/enforce- \
+#   pod-security.kubernetes.io/audit- \
+#   pod-security.kubernetes.io/warn-
+
