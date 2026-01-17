@@ -4,7 +4,7 @@ FROM golang:1.21-alpine AS builder
 WORKDIR /app
 
 # Copy all backend files including vendor
-COPY backend/ ./
+COPY . .
 
 # Build the instrumented application using vendored dependencies
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o loan-validator-portal main_instrumented.go
