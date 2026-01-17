@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Validator Portal</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .input-field {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #3b82f6;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+        }
+        .tab-active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border-bottom: 2px solid #3b82f6;
+        }
+        .tab-inactive {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        .tab-inactive:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+            color: #fca5a5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .success {
+            background: rgba(34, 197, 94, 0.1);
+            border-left: 4px solid #22c55e;
+            color: #86efac;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+        .info-row:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(4px);
+        }
+        .info-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+        .info-value {
+            color: white;
+            font-weight: 600;
+        }
+        .status-Approved {
+            color: #22c55e;
+        }
+        .status-Pending {
+            color: #f59e0b;
+        }
+        .status-Rejected {
+            color: #ef4444;
+        }
+        .status-Disbursed {
+            color: #06b6d4;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div id="app-container" class="w-full max-w-md">
+        <!-- Login/Register Form -->
+        <div id="auth-container" class="card rounded-2xl p-8 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="logo mb-2">🏦 LoanCheck</div>
+                <h1 class="text-2xl font-bold text-white mb-1">Loan Validator Portal</h1>
+                <p class="text-gray-400 text-sm">Secure Loan Verification System</p>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="flex mb-6 bg-white bg-opacity-5 rounded-lg p-1">
+                <button id="login-tab" class="flex-1 py-3 px-4 rounded-md text-center transition-all duration-300 tab-active" 
+                        onclick="showLogin()">
+                    Login
+                </button>
+                <button id="register-tab" class="flex-1 py-3 px-4 rounded-md text-center transition-all duration-300 tab-inactive" 
+                        onclick="showRegister()">
+                    Register
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" hx-post="/auth/login" hx-trigger="submit" hx-target="#auth-response" hx-swap="innerHTML">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Username</label>
+                        <input type="text" name="username" required 
+                               class="input-field w-full px-4 py-3 rounded-lg"
+                               placeholder="Enter your username">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Password</label>
+                        <input type="password" name="password" required 
+                               class="input-field w-full px-4 py-3 rounded-lg"
+                               placeholder="Enter your password">
+                    </div>
+                    <button type="submit" 
+                            class="btn-primary w-full text-white font-semibold py-3 px-4 rounded-lg">
+                        Sign In
+                    </button>
+                </div>
+            </form>
+
+            <!-- Register Form (hidden by default) -->
+            <form id="register-form" hx-post="/auth/register" hx-trigger="submit" hx-target="#auth-response" hx-swap="innerHTML" style="display: none;">
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">First Name</label>
+                            <input type="text" name="first_name" required 
+                                   class="input-field w-full px-4 py-3 rounded-lg"
+                                   placeholder="First name">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Last Name</label>
+                            <input type="text" name="last_name" required 
+                                   class="input-field w-full px-4 py-3 rounded-lg"
+                                   placeholder="Last name">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Username</label>
+                        <input type="text" name="username" required 
+                               class="input-field w-full px-4 py-3 rounded-lg"
+                               placeholder="Choose a username">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Password</label>
+                        <input type="password" name="password" required 
+                               class="input-field w-full px-4 py-3 rounded-lg"
+                               placeholder="Choose a password">
+                    </div>
+                    <button type="submit" 
+                            class="btn-primary w-full text-white font-semibold py-3 px-4 rounded-lg">
+                        Create Account
+                    </button>
+                </div>
+            </form>
+
+            <div id="auth-response" class="mt-4"></div>
+        </div>
+
+        <!-- Dashboard Page (hidden by default) -->
+        <div id="dashboard-container" class="card rounded-2xl p-8 shadow-2xl" style="display: none;">
+            <div class="text-center mb-8">
+                <div class="logo mb-3">🏦 LoanCheck</div>
+                <h1 class="text-3xl font-bold text-white mb-2">Welcome Back!</h1>
+                <p class="text-gray-400 text-lg">Hello, <span id="username-display" class="text-blue-400 font-semibold"></span></p>
+            </div>
+
+            <!-- Validate Loan Button -->
+            <div class="mb-6">
+                <button id="validate-loan-btn"
+                        hx-get="/api/validate-loan" 
+                        hx-target="#loan-response" 
+                        hx-swap="innerHTML"
+                        class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-4 px-6 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    <span class="text-lg">🔍 Validate Your Loan Status</span>
+                </button>
+            </div>
+
+            <div id="loan-response" class="mt-6"></div>
+
+            <!-- Logout Button -->
+            <div class="mt-8">
+                <button onclick="logout()" 
+                        class="w-full bg-red-500 bg-opacity-20 border border-red-500 text-red-400 font-semibold py-3 px-4 rounded-lg hover:bg-opacity-30 transition-all duration-300">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching for Login/Register
+        function showLogin() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('login-tab').classList.add('tab-active');
+            document.getElementById('login-tab').classList.remove('tab-inactive');
+            document.getElementById('register-tab').classList.remove('tab-active');
+            document.getElementById('register-tab').classList.add('tab-inactive');
+            document.getElementById('auth-response').innerHTML = '';
+        }
+
+        function showRegister() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+            document.getElementById('register-tab').classList.add('tab-active');
+            document.getElementById('register-tab').classList.remove('tab-inactive');
+            document.getElementById('login-tab').classList.remove('tab-active');
+            document.getElementById('login-tab').classList.add('tab-inactive');
+            document.getElementById('auth-response').innerHTML = '';
+        }
+
+        // Handle successful login
+        document.body.addEventListener('htmx:afterSwap', function(event) {
+            if (event.detail.target.id === 'auth-response') {
+                const response = event.detail.xhr.response;
+                if (response.includes('success')) {
+                    // Extract username from response
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(response, 'text/html');
+                    const successMsg = doc.querySelector('.success');
+                    if (successMsg && successMsg.textContent.includes('Login successful')) {
+                        const username = successMsg.getAttribute('data-username');
+                        if (username) {
+                            showDashboard(username);
+                        }
+                    } else if (successMsg && successMsg.textContent.includes('Registration successful')) {
+                        // Auto-switch to login after registration
+                        setTimeout(() => {
+                            showLogin();
+                        }, 2000);
+                    }
+                }
+            }
+        });
+
+        function showDashboard(username) {
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('dashboard-container').style.display = 'block';
+            document.getElementById('username-display').textContent = username;
+        }
+
+        function logout() {
+            document.getElementById('dashboard-container').style.display = 'none';
+            document.getElementById('auth-container').style.display = 'block';
+            document.getElementById('loan-response').innerHTML = '';
+            showLogin();
+        }
+
+        // Check if user is already logged in on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            fetch('/auth/check-session')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.logged_in) {
+                        showDashboard(data.username);
+                    }
+                })
+                .catch(err => console.log('Not logged in'));
+        });
+    </script>
+</body>
+</html>

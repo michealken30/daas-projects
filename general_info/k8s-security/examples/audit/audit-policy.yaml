@@ -1,0 +1,54 @@
+apiVersion: audit.k8s.io/v1
+kind: Policy
+# Don't generate audit events for all requests in RequestReceived stage.
+omitStages:
+  - "RequestReceived"
+rules:
+  # Log pod changes at RequestResponse level
+  - level: RequestResponse
+    resources:
+    - group: ""
+      resources: ["pods"]
+    verbs: ["create", "update", "patch", "delete"]
+  
+  # Log secret access at RequestResponse level
+  - level: RequestResponse
+    resources:
+    - group: ""
+      resources: ["secrets"]
+  
+  # Log configmap changes
+  - level: RequestResponse
+    resources:
+    - group: ""
+      resources: ["configmaps"]
+    verbs: ["create", "update", "patch", "delete"]
+  
+  # Log RBAC changes
+  - level: RequestResponse
+    resources:
+    - group: "rbac.authorization.k8s.io"
+  
+  # Log persistent volume claims
+  - level: RequestResponse
+    resources:
+    - group: ""
+      resources: ["persistentvolumeclaims"]
+  
+  # Log service account changes
+  - level: RequestResponse
+    resources:
+    - group: ""
+      resources: ["serviceaccounts"]
+  
+  # Log network policy changes
+  - level: RequestResponse
+    resources:
+    - group: "networking.k8s.io"
+      resources: ["networkpolicies"]
+  
+  # Log all other requests at Metadata level
+  - level: Metadata
+    omitStages:
+      - "RequestReceived"
+

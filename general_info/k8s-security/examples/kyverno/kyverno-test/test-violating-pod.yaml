@@ -1,0 +1,15 @@
+# This pod violates Kyverno policies
+# It will be rejected when policies are enforced
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-violating-pod
+  namespace: default
+spec:
+  containers:
+  - name: test
+    image: nginx:latest
+    # Missing resource limits (violates require-resource-limits)
+    # Missing security context (violates require-non-root)
+    # Missing labels (violates require-labels)
+

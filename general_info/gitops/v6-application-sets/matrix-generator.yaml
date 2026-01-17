@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ecomm-matrix-deployment
+  namespace: argocd
+spec:
+  goTemplate: true # ← ADD THIS LINE
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: https://github.com/michealken30/e-comm-funiture.git
+              revision: main
+              directories:
+                - path: kubernetes-manifest/*
+          - clusters:
+              selector:
+                matchLabels:
+                  argocd.argoproj.io/secret-type: cluster
+  template:
+    metadata:
+      name: "{{.path.basename}}-{{.name}}" # Now this will be evaluated properly
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/michealken30/e-comm-funiture.git
+        targetRevision: main
+        path: "{{.path.path}}"
+      destination:
+        server: "{{.server}}"
+        namespace: ecomm
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

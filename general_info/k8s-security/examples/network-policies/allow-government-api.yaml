@@ -1,0 +1,28 @@
+# Allow Loan Validator Portal to access Government API
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-government-api
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: government-api
+  policyTypes:
+  - Ingress
+  ingress:
+  # Allow Loan Validator Portal
+  - from:
+    - podSelector:
+        matchLabels:
+          app: loan-validator-portal
+    ports:
+    - protocol: TCP
+      port: 8081
+  # Allow health checks from kubelet
+  - from:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 8081
+

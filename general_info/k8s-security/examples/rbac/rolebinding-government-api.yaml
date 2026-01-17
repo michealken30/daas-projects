@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: government-api-binding
+  namespace: default
+  labels:
+    app: government-api
+subjects:
+- kind: ServiceAccount
+  name: government-api-sa
+  namespace: default
+roleRef:
+  kind: Role
+  name: government-api-role
+  apiGroup: rbac.authorization.k8s.io
+

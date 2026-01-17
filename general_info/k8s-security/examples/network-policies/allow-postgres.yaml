@@ -1,0 +1,30 @@
+# Allow only Government API and Loan Validator to access PostgreSQL
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-postgres
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: postgres
+  policyTypes:
+  - Ingress
+  ingress:
+  # Allow Government API
+  - from:
+    - podSelector:
+        matchLabels:
+          app: government-api
+    ports:
+    - protocol: TCP
+      port: 5432
+  # Allow Loan Validator Portal
+  - from:
+    - podSelector:
+        matchLabels:
+          app: loan-validator-portal
+    ports:
+    - protocol: TCP
+      port: 5432
+

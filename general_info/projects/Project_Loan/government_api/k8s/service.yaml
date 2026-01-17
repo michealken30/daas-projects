@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: government-api-service
+  namespace: default
+  labels:
+    app: government-api
+spec:
+  type: ClusterIP
+  selector:
+    app: government-api
+  ports:
+  - name: http
+    port: 8081
+    targetPort: 8081
+    protocol: TCP

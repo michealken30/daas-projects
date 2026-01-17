@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: loan-validator-portal-role
+  namespace: default
+  labels:
+    app: loan-validator-portal
+rules:
+# Allow reading own ConfigMap and Secret
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  resourceNames: ["loan-validator-portal-config", "loan-validator-portal-secret"]
+  verbs: ["get", "list"]
+# Allow reading endpoints for service discovery
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get", "list"]
+# Allow reading services for service discovery
+- apiGroups: [""]
+  resources: ["services"]
+  resourceNames: ["loan-validator-portal-service", "government-api-service"]
+  verbs: ["get", "list"]
+

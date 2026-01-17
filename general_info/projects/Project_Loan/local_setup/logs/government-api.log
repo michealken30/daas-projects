@@ -1,0 +1,54 @@
+2025/12/06 07:29:27 Successfully connected to database
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /api/customer             --> main.getCustomerHandler (3 handlers)
+[GIN-debug] POST   /api/customer             --> main.addCustomerHandler (3 handlers)
+[GIN-debug] GET    /api/customers            --> main.getAllCustomersHandler (3 handlers)
+[GIN-debug] DELETE /api/customer/:id         --> main.deleteCustomerHandler (3 handlers)
+[GIN-debug] GET    /health                   --> main.main.func1 (3 handlers)
+2025/12/06 07:29:27 Government Loan Bank API starting on port 8082
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8082
+[GIN] 2025/12/06 - 07:33:24 | 404 |    4.467052ms |       127.0.0.1 | GET      "/api/customer?first_name=Ademola&last_name=Sobaki"
+[GIN] 2025/12/06 - 07:35:22 | 201 |    5.718892ms |             ::1 | POST     "/api/customer"
+[GIN] 2025/12/06 - 07:35:35 | 200 |    1.608397ms |       127.0.0.1 | GET      "/api/customer?first_name=Ademola&last_name=Sobaki"
+[GIN] 2025/12/06 - 08:09:04 | 404 |     1.68113ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:09:06 | 404 |    1.393833ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:09:06 | 404 |    1.544287ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:09:06 | 404 |    1.247294ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:09:06 | 404 |    1.425413ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:09:08 | 404 |    1.137482ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:09:08 | 404 |    1.617299ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:06 | 404 |     869.424µs |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:06 | 404 |    1.490179ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:06 | 404 |     935.885µs |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:06 | 404 |    1.079166ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:06 | 404 |    1.792225ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:07 | 404 |    1.348628ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:08 | 404 |    1.304242ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:08 | 404 |    1.526332ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:08 | 404 |     1.80337ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:08 | 404 |    1.466697ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:08 | 404 |    1.612019ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:09 | 404 |    1.280041ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:09 | 404 |    1.501141ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:09 | 404 |    1.627751ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:09 | 404 |    1.440596ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:09 | 404 |    1.111379ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:10 | 404 |    1.440599ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:10 | 404 |    1.308303ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:10 | 404 |    1.615753ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:10 | 404 |    1.226526ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:10 | 404 |    1.337553ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:11 | 404 |    1.505042ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:11 | 404 |    1.294096ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:11 | 404 |    1.533115ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:11 | 404 |    1.514653ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:10:11 | 404 |    1.500091ms |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"
+[GIN] 2025/12/06 - 08:21:59 | 201 |    6.453582ms |             ::1 | POST     "/api/customer"
+[GIN] 2025/12/06 - 08:22:06 | 200 |     971.773µs |       127.0.0.1 | GET      "/api/customer?first_name=Kate&last_name=Kate"

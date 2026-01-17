@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: default
+data:
+  01-init-databases.sh: |
+    #!/bin/bash
+    set -e
+    
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
+      SELECT 'CREATE DATABASE government_loan_db' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'government_loan_db')\gexec
+      SELECT 'CREATE DATABASE loan_validator_db' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'loan_validator_db')\gexec
+    EOSQL
+    
+    # Initialize government_loan_db schema
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname government_loan_db <<-EOSQL
+      CREATE TABLE IF NOT EXISTS customers (
+          id SERIAL PRIMARY KEY,
+          first_name VARCHAR(100) NOT NULL,
+          last_name VARCHAR(100) NOT NULL,
+          date_of_birth VARCHAR(20) NOT NULL,
+          loan_amount_requested DECIMAL(12, 2) NOT NULL,
+          loan_status VARCHAR(50) NOT NULL CHECK (loan_status IN ('Approved', 'Pending', 'Rejected', 'Under Review', 'Disbursed')),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE INDEX IF NOT EXISTS idx_customers_names ON customers(LOWER(first_name), LOWER(last_name));
+      
+      INSERT INTO customers (first_name, last_name, date_of_birth, loan_amount_requested, loan_status) 
+      VALUES 
+          ('John', 'Doe', '1985-05-15', 50000.00, 'Approved'),
+          ('Jane', 'Smith', '1990-08-22', 75000.00, 'Pending'),
+          ('Michael', 'Johnson', '1978-03-10', 100000.00, 'Disbursed'),
+          ('Sarah', 'Williams', '1992-11-30', 35000.00, 'Under Review'),
+          ('David', 'Brown', '1988-07-18', 60000.00, 'Rejected')
+      ON CONFLICT DO NOTHING;
+    EOSQL
+    
+    # Initialize loan_validator_db schema
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname loan_validator_db <<-EOSQL
+      CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY,
+          first_name VARCHAR(100) NOT NULL,
+          last_name VARCHAR(100) NOT NULL,
+          username VARCHAR(50) UNIQUE NOT NULL,
+          password VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      
+      CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+    EOSQL
+    
+    echo "Database initialization completed successfully"

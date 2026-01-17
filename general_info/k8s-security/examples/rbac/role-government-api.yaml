@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: government-api-role
+  namespace: default
+  labels:
+    app: government-api
+rules:
+# Allow reading own ConfigMap and Secret
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  resourceNames: ["government-api-config", "government-api-secret"]
+  verbs: ["get", "list"]
+# Allow reading endpoints for service discovery
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get", "list"]
+# Allow reading services for service discovery
+- apiGroups: [""]
+  resources: ["services"]
+  resourceNames: ["government-api-service", "postgres-service"]
+  verbs: ["get", "list"]
+
