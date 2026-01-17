@@ -126,6 +126,8 @@ jobs:
       - name: Sign image
         run: |
           cosign sign --yes \
+            --oidc-issuer https://token.actions.githubusercontent.com \
+            --oidc-client-id sigstore \
             ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}@${{ steps.push.outputs.digest }}
 
       - name: Attach SBOM
