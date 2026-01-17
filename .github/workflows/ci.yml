@@ -39,9 +39,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.organization=daas-project
             -Dsonar.projectKey=daas-projects_daas-projects
-            -Dsonar.projectName="daas-projects"
+            -Dsonar.projectName=daas-projects
             -Dsonar.host.url=${{ secrets.SONAR_URL }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.sources=general_info/projects/Project_Loan
