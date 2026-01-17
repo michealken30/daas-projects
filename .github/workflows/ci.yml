@@ -47,6 +47,9 @@ jobs:
             -Dsonar.sources=general_info/projects/Project_Loan
             -Dsonar.branch.name=main
             -Dsonar.qualitygate.wait=true
+            -Dsonar.c.file.suffixes=- 
+            -Dsonar.cpp.file.suffixes=- 
+            -Dsonar.objc.file.suffixes=-
 
   # ==================== Build & Scan Government API ====================
   build-government-api:
