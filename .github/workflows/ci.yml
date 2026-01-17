@@ -63,6 +63,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
+
+      contents: read
+      packages: write
+      id-token: write # 🔑 REQUIRED for cosign keyless signing
+
     outputs:
       image-tag: ${{ steps.image-info.outputs.tag }}
       image-digest: ${{ steps.push.outputs.digest }}
