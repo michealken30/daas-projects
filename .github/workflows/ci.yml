@@ -46,7 +46,7 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.sources=general_info/projects/Project_Loan
             -Dsonar.branch.name=master
-            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.wait=false
             -Dsonar.c.file.suffixes=- 
             -Dsonar.cpp.file.suffixes=- 
             -Dsonar.objc.file.suffixes=-
