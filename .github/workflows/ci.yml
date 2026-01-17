@@ -8,6 +8,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+  id-token: write # 🔑 REQUIRED for cosign keyless signing
+
 env:
   DOCKER_REGISTRY: docker.io/${{ secrets.DOCKERHUB_USERNAME }}
   ECR_REPOSITORY_GOV: government-api
