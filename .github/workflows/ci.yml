@@ -9,7 +9,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
   packages: write
   id-token: write # 🔑 REQUIRED for cosign keyless signing
 
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
-      contents: read
+      contents: write
       packages: write
       id-token: write # 🔑 REQUIRED for cosign keyless signing
 
@@ -147,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
-      contents: read
+      contents: write
       packages: write
       id-token: write
     outputs:
