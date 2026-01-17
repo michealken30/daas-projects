@@ -231,8 +231,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: ${{ env.MANIFEST_REPO }}
-          token: ${{ github.token }}
-          persist-credentials: true
+          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
 
       - name: Update Helm values
         run: |
