@@ -131,12 +131,11 @@ jobs:
       #       ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}@${{ steps.push.outputs.digest }}
 
       - name: Sign image
-        uses: sigstore/cosign-action@v3.0.0
         env:
-          TUF_ROOT: "https://sigstore-tuf-root.storage.googleapis.com"
-        with:
-          image: ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}@${{ steps.push.outputs.digest }}
-          oidc-client-id: sigstore
+          COSIGN_EXPERIMENTAL: 1 # This enables keyless signing with GitHub OIDC
+        run: |
+          cosign sign --yes \
+            ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}@${{ steps.push.outputs.digest }}
 
       - name: Attach SBOM
         run: |
