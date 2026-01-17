@@ -225,15 +225,15 @@ jobs:
     name: Update Manifests and Trigger GitOps
     needs: [build-government-api, build-loan-validator]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           repository: ${{ env.MANIFEST_REPO }}
-          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
-          path: manifests
+          token: ${{ github.token }}
 
       - name: Update Helm values
-        working-directory: manifests
         run: |
           yq eval -i '.image.repository = "${{ env.DOCKER_REGISTRY }}/government-api"' helm/government-api/values.yaml
           yq eval -i '.image.tag = "${{ needs.build-government-api.outputs.image-tag }}"' helm/government-api/values.yaml
@@ -242,7 +242,6 @@ jobs:
           yq eval -i '.image.tag = "${{ needs.build-loan-validator.outputs.image-tag }}"' helm/loan-validator-portal/values.yaml
 
       - name: Commit changes
-        working-directory: manifests
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
