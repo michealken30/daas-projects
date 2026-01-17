@@ -40,10 +40,11 @@ jobs:
         with:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.projectKey=daas-projects
             -Dsonar.host.url=${{ secrets.SONAR_URL }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.sources=general_info/projects/Project_Loan
+            -Dsonar.branch.name=main
             -Dsonar.qualitygate.wait=true
 
   # ==================== Build & Scan Government API ====================
