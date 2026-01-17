@@ -123,12 +123,20 @@ jobs:
           echo "digest=$(docker inspect --format='{{index .RepoDigests 0}}' \
             ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}:${{ env.IMAGE_TAG }} | cut -d'@' -f2)" >> $GITHUB_OUTPUT
 
+      # - name: Sign image
+      #   run: |
+      #     cosign sign --yes \
+      #       --oidc-issuer https://token.actions.githubusercontent.com \
+      #       --oidc-client-id sigstore \
+      #       ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}@${{ steps.push.outputs.digest }}
+
       - name: Sign image
-        run: |
-          cosign sign --yes \
-            --oidc-issuer https://token.actions.githubusercontent.com \
-            --oidc-client-id sigstore \
-            ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}@${{ steps.push.outputs.digest }}
+        uses: sigstore/cosign-action@v3.0.0
+        env:
+          TUF_ROOT: "https://sigstore-tuf-root.storage.googleapis.com"
+        with:
+          image: ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}@${{ steps.push.outputs.digest }}
+          oidc-client-id: sigstore
 
       - name: Attach SBOM
         run: |
