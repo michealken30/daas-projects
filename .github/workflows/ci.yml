@@ -232,6 +232,7 @@ jobs:
         with:
           repository: ${{ env.MANIFEST_REPO }}
           token: ${{ github.token }}
+          persist-credentials: true
 
       - name: Update Helm values
         run: |
