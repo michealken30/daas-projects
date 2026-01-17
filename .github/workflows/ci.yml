@@ -45,7 +45,7 @@ jobs:
             -Dsonar.host.url=${{ secrets.SONAR_URL }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
             -Dsonar.sources=general_info/projects/Project_Loan
-            -Dsonar.branch.name=main
+            -Dsonar.branch.name=master
             -Dsonar.qualitygate.wait=true
             -Dsonar.c.file.suffixes=- 
             -Dsonar.cpp.file.suffixes=- 
