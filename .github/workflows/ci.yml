@@ -137,7 +137,7 @@ jobs:
 
       - name: Sign image
         env:
-          COSIGN_EXPERIMENTAL: 1 # This enables keyless signing with GitHub OIDC
+          COSIGN_EXPERIMENTAL:
         run: |
           cosign sign --yes \
             ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}@${{ steps.push.outputs.digest }}
