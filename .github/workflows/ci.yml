@@ -137,7 +137,7 @@ jobs:
 
       - name: Sign image
         env:
-          COSIGN_EXPERIMENTAL:
+          COSIGN_EXPERIMENTAL: "1"
         run: |
           cosign sign --yes \
             ${{ env.DOCKER_REGISTRY }}/${{ env.ECR_REPOSITORY_GOV }}@${{ steps.push.outputs.digest }}
